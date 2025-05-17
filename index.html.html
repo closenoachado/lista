@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>close no achado | os melhores produtos com ótimo custo-benefício</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #fff9fc;
+            text-transform: lowercase;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #ff80bf 0%, #ff5ca8 100%);
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(255, 105, 180, 0.2);
+        }
+        
+        .search-input:focus {
+            box-shadow: 0 0 0 3px rgba(255, 105, 180, 0.3);
+        }
+        
+        .category-btn.active {
+            background-color: #ff5ca8;
+            color: white;
+        }
+        
+        .category-btn:hover:not(.active) {
+            background-color: #ffe6f2;
+        }
+        
+        .shopee-tag {
+            background-color: #EE4D2D;
+            color: white;
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 4px;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-weight: 600;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #fff0f7;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #ff80bf;
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #ff5ca8;
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+        
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+        
+        /* Product card styling for consistent button alignment */
+        .product-card {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        /* 1:1 aspect ratio for product images */
+        .product-image {
+            position: relative;
+            width: 100%;
+            padding-bottom: 100%; /* Creates 1:1 aspect ratio */
+            background-color: #fff0f7;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        
+        .product-image-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .product-content {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            padding: 1rem;
+        }
+        
+        .product-title {
+            margin-bottom: 0.5rem;
+            min-height: 3rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .product-id {
+            font-size: 0.8rem;
+            color: #888;
+            margin-bottom: 0.75rem;
+            text-align: center;
+            display: block;
+            width: 100%;
+        }
+        
+        .button-container {
+            display: flex;
+            justify-content: center;
+            padding-top: 0.5rem;
+            margin-top: auto;
+        }
+        
+        /* Modal styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal-content {
+            background-color: white;
+            border-radius: 1rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            width: 90%;
+            max-width: 500px;
+            transform: scale(0.9);
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+            opacity: 1;
+        }
+        
+        /* 1:1 aspect ratio for modal image */
+        .modal-image {
+            position: relative;
+            width: 100%;
+            padding-bottom: 100%; /* Creates 1:1 aspect ratio */
+            background-color: #fff0f7;
+            border-top-left-radius: 1rem;
+            border-top-right-radius: 1rem;
+            overflow: hidden;
+        }
+        
+        .modal-image-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        @keyframes zoomIn {
+            from { transform: scale(0.5); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        
+        .zoom-in {
+            animation: zoomIn 0.3s ease-out forwards;
+        }
+        
+        /* SVG container to maintain aspect ratio */
+        .svg-container {
+            width: 70%;
+            height: 70%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-svg-container {
+            width: 60%;
+            height: 60%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Info modal styles */
+        .info-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        
+        .info-modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .info-modal-content {
+            background-color: white;
+            border-radius: 1rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            width: 90%;
+            max-width: 700px;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: scale(0.9);
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            position: relative;
+        }
+        
+        .info-modal-overlay.active .info-modal-content {
+            transform: scale(1);
+            opacity: 1;
+        }
+        
+        .info-modal-header {
+            position: sticky;
+            top: 0;
+            background-color: white;
+            padding: 1.5rem 1.5rem 0.5rem;
+            border-top-left-radius: 1rem;
+            border-top-right-radius: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+        }
+        
+        .info-modal-body {
+            padding: 0 1.5rem 1.5rem;
+        }
+        
+        .info-modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #ff5ca8;
+            width: 2rem;
+            height: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background-color 0.2s;
+        }
+        
+        .info-modal-close:hover {
+            background-color: #fff0f7;
+        }
+        
+        .info-section {
+            margin-bottom: 2rem;
+        }
+        
+        .info-section:last-child {
+            margin-bottom: 0;
+        }
+        
+        /* Real product image styles */
+        .real-product-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="sticky top-0 z-50 bg-white shadow-md">
+        <div class="container mx-auto px-4 py-3 flex flex-col md:flex-row items-center justify-between">
+            <div class="flex items-center mb-3 md:mb-0">
+                <svg class="w-8 h-8 text-pink-500" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path>
+                </svg>
+                <h1 class="text-2xl font-bold text-pink-500 ml-2">close no achado</h1>
+            </div>
+            
+            <!-- Search Bar -->
+            <div class="relative w-full md:w-1/3">
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    placeholder="buscar produtos..." 
+                    class="search-input w-full py-2 px-4 rounded-full border border-pink-200 focus:outline-none transition duration-300"
+                >
+                <button class="absolute right-3 top-2 text-pink-400">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Banner -->
+    <section class="gradient-bg text-white py-12 md:py-20">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-3xl md:text-4xl font-bold mb-4 fade-in">encontre os melhores achadinhos e economize agora!</h2>
+            <p class="text-lg md:text-xl mb-8 max-w-2xl mx-auto fade-in delay-100">produtos incríveis com o melhor custo-benefício selecionados especialmente para você!</p>
+            <div class="flex justify-center fade-in delay-200">
+                <a href="#produtos" class="bg-white text-pink-500 font-semibold py-3 px-8 rounded-full hover:bg-pink-100 transition duration-300 shadow-lg">
+                    ver ofertas
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories -->
+    <section class="py-8 bg-white">
+        <div class="container mx-auto px-4">
+            <h3 class="text-xl font-semibold text-gray-700 mb-4 text-center">categorias</h3>
+            <div class="flex flex-wrap justify-center gap-2 md:gap-4">
+                <button class="category-btn active px-4 py-2 rounded-full text-sm font-medium transition duration-300" data-category="todos">todos</button>
+                <button class="category-btn px-4 py-2 rounded-full text-sm font-medium transition duration-300" data-category="beleza">beleza</button>
+                <button class="category-btn px-4 py-2 rounded-full text-sm font-medium transition duration-300" data-category="moda">moda</button>
+                <button class="category-btn px-4 py-2 rounded-full text-sm font-medium transition duration-300" data-category="acessorios">acessórios</button>
+                <button class="category-btn px-4 py-2 rounded-full text-sm font-medium transition duration-300" data-category="utilidades">utilidades</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Grid -->
+    <section id="produtos" class="py-10 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-2xl font-bold text-gray-800 mb-8 text-center">ofertas imperdíveis</h2>
+            
+            <div id="noResults" class="hidden text-center py-10">
+                <svg class="w-16 h-16 text-pink-300 mx-auto mb-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                </svg>
+                <p class="text-lg text-gray-600">nenhum produto encontrado com esses critérios.</p>
+                <button id="clearSearch" class="mt-4 px-4 py-2 bg-pink-500 text-white rounded-full hover:bg-pink-600 transition duration-300">limpar busca</button>
+            </div>
+            
+            <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <!-- Products will be dynamically inserted here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Product Modal -->
+    <div id="productModal" class="modal-overlay">
+        <div class="modal-content zoom-in">
+            <div id="modalContent">
+                <!-- Modal content will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- About Us Modal -->
+    <div id="aboutModal" class="info-modal-overlay">
+        <div class="info-modal-content zoom-in">
+            <div class="info-modal-header">
+                <h3 class="text-xl font-bold text-gray-800">sobre nós</h3>
+                <button class="info-modal-close" onclick="closeInfoModal('aboutModal')">×</button>
+            </div>
+            <div class="info-modal-body">
+                <div class="info-section">
+                    <p class="text-gray-600 mb-4">
+                        o Close no Achado é o seu radar de confiança pra descobrir achadinhos de beleza, moda e lifestyle — tudo sob o olhar afiado de quem entende que a qualidade mora nos detalhes. aqui, a gente não só encontra: a gente dá aquele close maroto no que realmente importa.
+                    </p>
+                    <p class="text-gray-600 mb-4">
+                        nada passa batido: da make perfeita ao vestido que parece de fashion week (mas cabe no cartão de crédito sem drama). é zoom nos produtos, nas promoções e nas tendências que fazem você se sentir linda, poderosa e ainda pagando pouco (porque a beleza do negócio é essa, né?).
+                    </p>
+                    <p class="text-gray-600 mb-4">
+                        no Close no Achado, cada dica vem com selo de qualidade e pitada de amor próprio. mais do que economizar, é sobre valorizar: seu tempo, seu dinheiro e, claro, seu estilo.
+                    </p>
+                    <p class="text-gray-600 mb-4">
+                        chega mais. dá o close. você vai se apaixonar de pertinho. 💋
+                    </p>
+                </div>
+                
+                <div class="info-section">
+                    <h4 class="text-lg font-bold text-gray-800 mb-3">isenção de responsabilidade</h4>
+                    <p class="text-gray-600 mb-4">
+                        antes de você sair enchendo o carrinho (e o coração) com nossos achadinhos, um recadinho rápido, transparente e necessário:
+                    </p>
+                    <p class="text-gray-600 mb-4">
+                        alguns dos links compartilhados aqui no Close no Achado são links de afiliados. Isso significa que, se você clicar e finalizar uma compra, eu posso receber uma pequena comissão — sem que isso altere o valor final do seu produto. Ou seja: você não paga a mais por nada! 🎯
+                    </p>
+                    <p class="text-gray-600 mb-4">
+                        importante: todas as recomendações são feitas com carinho, muita pesquisa e olho clínico (afinal, a gente dá close, lembra?). Só indico aquilo que realmente acredito que pode fazer diferença no seu dia a dia.
+                    </p>
+                    <p class="text-gray-600 mb-4">
+                        o Close no Achado não se responsabiliza por questões relacionadas a entrega, qualidade, funcionamento, garantias ou qualquer outro serviço prestado pelas lojas ou plataformas anunciadas. A relação de compra é diretamente entre você e a loja.
+                    </p>
+                    <p class="text-gray-600 mb-4">
+                        meu compromisso aqui é dividir oportunidades incríveis, dar dicas sinceras e te ajudar a encontrar o melhor — mas a decisão final é sempre sua, combinado?
+                    </p>
+                    <p class="text-gray-600 mb-4">
+                        em resumo: te mostro o caminho das pedras, mas a trilha quem faz é você. 😉
+                    </p>
+                    <p class="text-gray-600">
+                        obrigada pela confiança e bora seguir de olho nos achados!
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Modal -->
+    <div id="contactModal" class="info-modal-overlay">
+        <div class="info-modal-content zoom-in">
+            <div class="info-modal-header">
+                <h3 class="text-xl font-bold text-gray-800">contato</h3>
+                <button class="info-modal-close" onclick="closeInfoModal('contactModal')">×</button>
+            </div>
+            <div class="info-modal-body">
+                <div class="flex flex-col space-y-4 py-4">
+                    <div class="flex items-center">
+                        <svg class="w-6 h-6 text-pink-500 mr-3" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
+                            <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
+                        </svg>
+                        <span class="text-gray-700">e-mail: <a href="mailto:closenoachado@gmail.com" class="text-pink-500 hover:underline">closenoachado@gmail.com</a></span>
+                    </div>
+                    <div class="flex items-center">
+                        <svg class="w-6 h-6 text-pink-500 mr-3" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                        </svg>
+                        <span class="text-gray-700">instagram: <a href="https://instagram.com/closenoachado" target="_blank" class="text-pink-500 hover:underline">@closenoachado</a></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Privacy Policy Modal -->
+    <div id="privacyModal" class="info-modal-overlay">
+        <div class="info-modal-content zoom-in">
+            <div class="info-modal-header">
+                <h3 class="text-xl font-bold text-gray-800">política de privacidade</h3>
+                <button class="info-modal-close" onclick="closeInfoModal('privacyModal')">×</button>
+            </div>
+            <div class="info-modal-body">
+                <div class="info-section">
+                    <h4 class="text-lg font-bold text-gray-800 mb-3">1. informações coletadas</h4>
+                    <p class="text-gray-600 mb-4">
+                        o site Close no Achado coleta informações fornecidas voluntariamente pelos usuários, como nome e e-mail, por meio de formulários de contato ou inscrição em newsletters.
+                    </p>
+                    <p class="text-gray-600 mb-4">
+                        além disso, o site pode coletar dados automaticamente, como endereço IP, tipo de navegador, páginas acessadas e tempo de permanência, por meio de cookies e tecnologias similares, com o objetivo de melhorar a experiência do usuário.
+                    </p>
+                </div>
+                
+                <div class="info-section">
+                    <h4 class="text-lg font-bold text-gray-800 mb-3">2. uso das informações</h4>
+                    <p class="text-gray-600 mb-4">
+                        as informações coletadas são utilizadas para:
+                    </p>
+                    <ul class="list-disc pl-6 text-gray-600 mb-4">
+                        <li>responder a solicitações e dúvidas dos usuários;</li>
+                        <li>enviar newsletters e comunicações promocionais, quando autorizado;</li>
+                        <li>analisar métricas de acesso e desempenho do site;</li>
+                        <li>exibir anúncios personalizados por meio de programas de afiliados, como o da Shopee, Mercado Livre, Amazon, Aliexpress, etc.</li>
+                    </ul>
+                </div>
+                
+                <div class="info-section">
+                    <h4 class="text-lg font-bold text-gray-800 mb-3">3. compartilhamento de dados</h4>
+                    <p class="text-gray-600 mb-4">
+                        o site não compartilha informações pessoais dos usuários com terceiros, exceto quando necessário para o funcionamento do site ou cumprimento de obrigações legais.
+                    </p>
+                    <p class="text-gray-600 mb-4">
+                        links de afiliados podem direcionar o usuário para sites de terceiros, que possuem suas próprias políticas de privacidade. recomenda-se a leitura dessas políticas ao acessar tais sites.
+                    </p>
+                </div>
+                
+                <div class="info-section">
+                    <h4 class="text-lg font-bold text-gray-800 mb-3">4. cookies</h4>
+                    <p class="text-gray-600 mb-4">
+                        utilizamos cookies para melhorar a funcionalidade do site e personalizar a experiência do usuário. ao continuar navegando, você concorda com o uso de cookies.
+                    </p>
+                </div>
+                
+                <div class="info-section">
+                    <h4 class="text-lg font-bold text-gray-800 mb-3">5. direitos dos titulares</h4>
+                    <p class="text-gray-600 mb-4">
+                        de acordo com a LGPD (Lei Geral de Proteção de Dados Pessoais), os usuários têm direito a:
+                    </p>
+                    <ul class="list-disc pl-6 text-gray-600 mb-4">
+                        <li>confirmar a existência de tratamento de seus dados;</li>
+                        <li>acessar seus dados pessoais;</li>
+                        <li>corrigir dados incompletos, inexatos ou desatualizados;</li>
+                        <li>solicitar a anonimização, bloqueio ou eliminação de dados desnecessários ou excessivos;</li>
+                        <li>revogar o consentimento para o tratamento de dados.</li>
+                    </ul>
+                    <p class="text-gray-600 mb-4">
+                        para exercer esses direitos, entre em contato pelo e-mail: closenoachado@gmail.com.
+                    </p>
+                </div>
+                
+                <div class="info-section">
+                    <h4 class="text-lg font-bold text-gray-800 mb-3">6. segurança</h4>
+                    <p class="text-gray-600 mb-4">
+                        adotamos medidas de segurança para proteger as informações dos usuários contra acessos não autorizados, perda ou destruição.
+                    </p>
+                </div>
+                
+                <div class="info-section">
+                    <h4 class="text-lg font-bold text-gray-800 mb-3">7. alterações na política</h4>
+                    <p class="text-gray-600 mb-4">
+                        esta política de privacidade pode ser atualizada periodicamente. recomendamos a revisão regular deste documento.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Terms of Use Modal -->
+    <div id="termsModal" class="info-modal-overlay">
+        <div class="info-modal-content zoom-in">
+            <div class="info-modal-header">
+                <h3 class="text-xl font-bold text-gray-800">termos de uso</h3>
+                <button class="info-modal-close" onclick="closeInfoModal('termsModal')">×</button>
+            </div>
+            <div class="info-modal-body">
+                <div class="info-section">
+                    <h4 class="text-lg font-bold text-gray-800 mb-3">1. aceitação dos termos</h4>
+                    <p class="text-gray-600 mb-4">
+                        ao acessar e utilizar o site Close no Achado, você concorda com os presentes termos de uso e com a política de privacidade.
+                    </p>
+                </div>
+                
+                <div class="info-section">
+                    <h4 class="text-lg font-bold text-gray-800 mb-3">2. conteúdo do site</h4>
+                    <p class="text-gray-600 mb-4">
+                        o site oferece recomendações de produtos e links afiliados. não garantimos a disponibilidade, qualidade ou entrega dos produtos indicados, sendo responsabilidade do usuário verificar as condições nos sites de terceiros.
+                    </p>
+                </div>
+                
+                <div class="info-section">
+                    <h4 class="text-lg font-bold text-gray-800 mb-3">3. propriedade intelectual</h4>
+                    <p class="text-gray-600 mb-4">
+                        todo o conteúdo do site, incluindo textos, imagens e logotipos, é protegido por direitos autorais e não pode ser reproduzido sem autorização prévia.
+                    </p>
+                </div>
+                
+                <div class="info-section">
+                    <h4 class="text-lg font-bold text-gray-800 mb-3">4. responsabilidades</h4>
+                    <p class="text-gray-600 mb-4">
+                        não nos responsabilizamos por:
+                    </p>
+                    <ul class="list-disc pl-6 text-gray-600 mb-4">
+                        <li>conteúdo de sites de terceiros acessados por meio de links;</li>
+                        <li>eventuais danos decorrentes do uso do site ou de produtos adquiridos por meio de links afiliados;</li>
+                        <li>informações incorretas ou desatualizadas fornecidas por parceiros comerciais.</li>
+                    </ul>
+                </div>
+                
+                <div class="info-section">
+                    <h4 class="text-lg font-bold text-gray-800 mb-3">5. modificações nos termos</h4>
+                    <p class="text-gray-600 mb-4">
+                        reservamo-nos o direito de alterar estes termos de uso a qualquer momento. as alterações entrarão em vigor imediatamente após a publicação no site.
+                    </p>
+                </div>
+                
+                <div class="info-section">
+                    <h4 class="text-lg font-bold text-gray-800 mb-3">6. contato</h4>
+                    <p class="text-gray-600 mb-4">
+                        para dúvidas ou informações adicionais, entre em contato pelo e-mail: closenoachado@gmail.com.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Newsletter -->
+    <section class="py-12 bg-pink-50">
+        <div class="container mx-auto px-4 text-center">
+            <h3 class="text-2xl font-bold text-gray-800 mb-4">fique por dentro das melhores ofertas!</h3>
+            <p class="text-gray-600 mb-6 max-w-lg mx-auto">inscreva-se para receber novidades e promoções exclusivas diretamente no seu email.</p>
+            <div class="flex justify-center">
+                <a href="https://forms.gle/Yd1SSyPw5B8Jy41P6" target="_blank" class="gradient-bg text-white font-medium py-3 px-6 rounded-full hover:opacity-90 transition duration-300 shadow-md flex items-center">
+                    <span class="mr-2">&gt;</span> inscrever-se na newsletter
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-white pt-12 pb-6">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+                <div>
+                    <h4 class="text-lg font-semibold text-gray-800 mb-4">close no achado</h4>
+                    <p class="text-gray-600">selecionamos os melhores produtos com ótimo custo-benefício para você economizar nas suas compras online.</p>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold text-gray-800 mb-4">links úteis</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-600 hover:text-pink-500 transition duration-300" onclick="openInfoModal('aboutModal'); return false;">sobre nós</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-pink-500 transition duration-300" onclick="openInfoModal('contactModal'); return false;">contato</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-pink-500 transition duration-300" onclick="openInfoModal('privacyModal'); return false;">política de privacidade</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-pink-500 transition duration-300" onclick="openInfoModal('termsModal'); return false;">termos de uso</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold text-gray-800 mb-4">redes sociais</h4>
+                    <div class="flex space-x-4">
+                        <a href="https://instagram.com/closenoachado" target="_blank" class="text-pink-400 hover:text-pink-600 transition duration-300">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                            </svg>
+                        </a>
+                        <a href="https://facebook.com/closenoachado" target="_blank" class="text-pink-400 hover:text-pink-600 transition duration-300">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M22.675 0h-21.35c-.732 0-1.325.593-1.325 1.325v21.351c0 .731.593 1.324 1.325 1.324h11.495v-9.294h-3.128v-3.622h3.128v-2.671c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12v9.293h6.116c.73 0 1.323-.593 1.323-1.325v-21.35c0-.732-.593-1.325-1.325-1.325z"/>
+                            </svg>
+                        </a>
+                        <a href="https://x.com/@closenoachado" target="_blank" class="text-pink-400 hover:text-pink-600 transition duration-300">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723 10.054 10.054 0 01-3.127 1.184 4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
+                            </svg>
+                        </a>
+                        <a href="https://www.youtube.com/@closenoachado" target="_blank" class="text-pink-400 hover:text-pink-600 transition duration-300">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm4.441 16.892c-2.102.144-6.784.144-8.883 0-2.276-.156-2.541-1.27-2.558-4.892.017-3.629.285-4.736 2.558-4.892 2.099-.144 6.782-.144 8.883 0 2.277.156 2.541 1.27 2.559 4.892-.018 3.629-.285 4.736-2.559 4.892zm-6.441-7.234l4.917 2.338-4.917 2.346v-4.684z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-200 pt-6">
+                <p class="text-center text-gray-500 text-sm">
+                    <strong>aviso:</strong> este site contém links de afiliados. ao clicar e comprar através desses links, podemos receber uma comissão, sem custo adicional para você.
+                </p>
+                <p class="text-center text-gray-500 text-sm mt-4">
+                    &copy; 2023 close no achado. todos os direitos reservados.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Updated product data with real products
+        const products = [
+            {
+                id: '509',
+                name: 'penteadeira olívia',
+                image: 'https://i.imgur.com/gvbRopI.jpeg',
+                category: 'utilidades',
+                affiliateLink: 'https://s.shopee.com.br/2fyHQxeXwG'
+            },
+            {
+                id: '508',
+                name: 'creme corretivo mágic',
+                image: 'https://i.imgur.com/VCxjUwB.png',
+                category: 'beleza',
+                affiliateLink: 'https://s.shopee.com.br/9ABipVQvvF'
+            },
+            {
+                id: '507',
+                name: 'sheglam blush líquido',
+                image: 'https://i.imgur.com/Q253IHe.png',
+                category: 'beleza',
+                affiliateLink: 'https://s.shopee.com.br/30b5MLhw8o'
+            },
+            {
+                id: '506',
+                name: 'vestido de verão',
+                image: 'https://i.imgur.com/ZLfYU8I.jpeg',
+                category: 'moda',
+                affiliateLink: 'https://s.shopee.com.br/40TabsMSKp'
+            },
+            {
+                id: '505',
+                name: 'tênis moleca original',
+                image: 'https://i.imgur.com/ZliilUP.jpeg',
+                category: 'moda',
+                affiliateLink: 'https://s.shopee.com.br/7fMsqpI81E'
+            },
+            {
+                id: '504',
+                name: 'tênis feminino casual',
+                image: 'https://i.imgur.com/za1Dm0N.jpeg',
+                category: 'moda',
+                affiliateLink: 'https://s.shopee.com.br/7pgHcMfmqS'
+            },
+            {
+                id: '503',
+                name: 'vestido feminino festa',
+                image: 'https://i.imgur.com/dRqngeY.jpeg',
+                category: 'moda',
+                affiliateLink: 'https://s.shopee.com.br/1qP4NnVaqc'
+            },
+            {
+                id: '502',
+                name: 'gloss kiko milano',
+                image: 'https://i.imgur.com/UCTxbLK.jpeg',
+                category: 'beleza',
+                affiliateLink: 'https://s.shopee.com.br/VtgTRgN80'
+            },
+            {
+                id: '501',
+                name: 'bloom oil flores',
+                image: 'https://i.imgur.com/1EYMNL6.jpeg',
+                category: 'beleza',
+                affiliateLink: 'https://s.shopee.com.br/6VAtZJsdda'
+            }
+        ];
+
+        // Function to render products
+        function renderProducts(productsToRender) {
+            const productsGrid = document.getElementById('productsGrid');
+            productsGrid.innerHTML = '';
+            
+            if (productsToRender.length === 0) {
+                document.getElementById('noResults').classList.remove('hidden');
+                return;
+            }
+            
+            document.getElementById('noResults').classList.add('hidden');
+            
+            productsToRender.forEach((product, index) => {
+                const productCard = document.createElement('div');
+                productCard.className = `bg-white rounded-lg overflow-hidden shadow-md card-hover transition duration-300 fade-in delay-${(index % 3) * 100}`;
+                productCard.innerHTML = `
+                    <div class="block h-full">
+                        <div class="product-card">
+                            <div class="product-image" onclick="openProductModal('${product.id}')">
+                                <div class="product-image-content">
+                                    <span class="shopee-tag">shopee</span>
+                                    <img src="${product.image}" alt="${product.name}" class="real-product-image">
+                                </div>
+                            </div>
+                            <div class="product-content">
+                                <div class="product-title">
+                                    <h3 class="text-lg font-semibold text-gray-800 text-center">${product.name}</h3>
+                                </div>
+                                <div class="flex flex-col items-center mt-auto">
+                                    <div class="product-id mb-2">${product.id}</div>
+                                    <a href="${product.affiliateLink}" target="_blank" class="bg-pink-500 hover:bg-pink-600 text-white px-6 py-2 rounded-full text-sm font-medium transition duration-300 inline-block">
+                                        ver oferta
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                productsGrid.appendChild(productCard);
+            });
+        }
+
+        // Function to open product modal
+        function openProductModal(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+            
+            const modalContent = document.getElementById('modalContent');
+            modalContent.innerHTML = `
+                <div class="modal-image">
+                    <div class="modal-image-content">
+                        <span class="shopee-tag">shopee</span>
+                        <img src="${product.image}" alt="${product.name}" class="real-product-image">
+                    </div>
+                </div>
+                <div class="p-6">
+                    <h3 class="text-xl font-semibold text-gray-800 text-center mb-1">${product.name}</h3>
+                    <div class="text-center text-gray-500 text-sm mb-6">${product.id}</div>
+                    <div class="flex justify-center">
+                        <a href="${product.affiliateLink}" target="_blank" class="bg-pink-500 hover:bg-pink-600 text-white px-8 py-3 rounded-full text-sm font-medium transition duration-300 inline-block">
+                            ver oferta
+                        </a>
+                    </div>
+                </div>
+            `;
+            
+            const modal = document.getElementById('productModal');
+            modal.classList.add('active');
+            
+            // Prevent scrolling when modal is open
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Function to close product modal
+        function closeModal() {
+            const modal = document.getElementById('productModal');
+            modal.classList.remove('active');
+            
+            // Re-enable scrolling
+            document.body.style.overflow = '';
+        }
+
+        // Function to open info modals (about, contact, privacy, terms)
+        function openInfoModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.classList.add('active');
+            
+            // Prevent scrolling when modal is open
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Function to close info modals
+        function closeInfoModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.classList.remove('active');
+            
+            // Re-enable scrolling
+            document.body.style.overflow = '';
+        }
+
+        // Close modal when clicking outside of content
+        document.getElementById('productModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // Close info modals when clicking outside of content
+        document.querySelectorAll('.info-modal-overlay').forEach(modal => {
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            });
+        });
+
+        // Initial render
+        renderProducts(products);
+
+        // Search functionality
+        const searchInput = document.getElementById('searchInput');
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase().trim();
+            
+            if (searchTerm === '') {
+                renderProducts(filterProductsByCategory(currentCategory));
+                return;
+            }
+            
+            const filteredProducts = products.filter(product => {
+                return (
+                    product.id.toLowerCase().includes(searchTerm) ||
+                    product.name.toLowerCase().includes(searchTerm)
+                ) && (currentCategory === 'todos' || product.category === currentCategory);
+            });
+            
+            renderProducts(filteredProducts);
+        });
+
+        // Clear search
+        document.getElementById('clearSearch').addEventListener('click', function() {
+            searchInput.value = '';
+            renderProducts(filterProductsByCategory(currentCategory));
+        });
+
+        // Category filtering
+        let currentCategory = 'todos';
+        
+        function filterProductsByCategory(category) {
+            if (category === 'todos') {
+                return products;
+            }
+            return products.filter(product => product.category === category);
+        }
+        
+        const categoryButtons = document.querySelectorAll('.category-btn');
+        categoryButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // Remove active class from all buttons
+                categoryButtons.forEach(btn => btn.classList.remove('active'));
+                
+                // Add active class to clicked button
+                this.classList.add('active');
+                
+                // Update current category and filter products
+                currentCategory = this.dataset.category;
+                const filteredProducts = filterProductsByCategory(currentCategory);
+                
+                // Apply search filter if there's a search term
+                const searchTerm = searchInput.value.toLowerCase().trim();
+                if (searchTerm !== '') {
+                    const searchFiltered = filteredProducts.filter(product => {
+                        return (
+                            product.id.toLowerCase().includes(searchTerm) ||
+                            product.name.toLowerCase().includes(searchTerm)
+                        );
+                    });
+                    renderProducts(searchFiltered);
+                } else {
+                    renderProducts(filteredProducts);
+                }
+            });
+        });
+
+        // Add keyboard support for closing modals with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+                document.querySelectorAll('.info-modal-overlay').forEach(modal => {
+                    modal.classList.remove('active');
+                });
+                document.body.style.overflow = '';
+            }
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'94156e3ad53ea435',t:'MTc0NzUwOTE5MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
