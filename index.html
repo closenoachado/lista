@@ -49,6 +49,18 @@
             font-weight: 600;
         }
         
+        .mercadolivre-tag {
+            background-color: #FFE600;
+            color: #333333;
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 4px;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-weight: 600;
+        }
+        
         /* Custom scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
@@ -691,8 +703,6 @@
         </div>
     </footer>
 
-    
-     
         <script src="products.js"></script>
         <script>
 
@@ -711,12 +721,17 @@
             productsToRender.forEach((product, index) => {
                 const productCard = document.createElement('div');
                 productCard.className = `bg-white rounded-lg overflow-hidden shadow-md card-hover transition duration-300 fade-in delay-${(index % 3) * 100}`;
+                
+                // Determine which tag to show based on marketplace
+                const tagClass = product.marketplace === 'mercadolivre' ? 'mercadolivre-tag' : 'shopee-tag';
+                const tagText = product.marketplace === 'mercadolivre' ? 'mercado livre' : 'shopee';
+                
                 productCard.innerHTML = `
                     <div class="block h-full">
                         <div class="product-card">
                             <div class="product-image" onclick="openProductModal('${product.id}')">
                                 <div class="product-image-content">
-                                    <span class="shopee-tag">shopee</span>
+                                    <span class="${tagClass}">${tagText}</span>
                                     <img src="${product.image}" alt="${product.name}" class="real-product-image">
                                 </div>
                             </div>
@@ -743,11 +758,15 @@
             const product = products.find(p => p.id === productId);
             if (!product) return;
             
+            // Determine which tag to show based on marketplace
+            const tagClass = product.marketplace === 'mercadolivre' ? 'mercadolivre-tag' : 'shopee-tag';
+            const tagText = product.marketplace === 'mercadolivre' ? 'mercado livre' : 'shopee';
+            
             const modalContent = document.getElementById('modalContent');
             modalContent.innerHTML = `
                 <div class="modal-image">
                     <div class="modal-image-content">
-                        <span class="shopee-tag">shopee</span>
+                        <span class="${tagClass}">${tagText}</span>
                         <img src="${product.image}" alt="${product.name}" class="real-product-image">
                     </div>
                 </div>
@@ -892,5 +911,5 @@
             }
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'94156e3ad53ea435',t:'MTc0NzUwOTE5MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'942431ff91c9a51d',t:'MTc0NzY2NDAxMC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
