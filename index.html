@@ -697,16 +697,48 @@
                     <strong>aviso:</strong> este site contém links de afiliados. ao clicar e comprar através desses links, podemos receber uma comissão, sem custo adicional para você.
                 </p>
                 <p class="text-center text-gray-500 text-sm mt-4">
-                    &copy; 2025 close no achado. todos os direitos reservados. | site desenvolvido com 🩷 por @viniciuz.design.
+                    &copy; 2025 close no achado. todos os direitos reservados. | site desenvolvido com carinho por @viniciuz.design.
                 </p>
             </div>
         </div>
     </footer>
 
-        <script src="products.js"></script>
-        <script>
+	<script>
 
-        // Function to render products
+    // Function to render products
+
+const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQQ2qgn87J-b672mVDVrEHPs8vUWQtcOMEucZpRmjchTUpcy_l-y53tyclFZUhRO9zTFT2f02dzWiKv/pub?gid=0&single=true&output=csv';
+let products = [];
+
+fetch(CSV_URL)
+  .then(response => response.text())
+  .then(csv => {
+    const linhas = csv.trim().split('\n');
+    const headers = linhas[0].split(',').map(h => h.trim());
+
+    products = linhas.slice(1).map(linha => {
+      const valores = linha.split(',').map(v => v.trim());
+      const obj = {};
+      headers.forEach((header, i) => {
+        obj[header] = valores[i] ?? '';
+      });
+      return obj;
+    });
+
+    // Converter strings numéricas (como IDs) se necessário
+    products.forEach(p => p.id = p.id?.toString());
+
+    renderProducts(products);
+  })
+  .catch(error => {
+    console.error('Erro ao carregar planilha:', error);
+    document.getElementById('productsGrid').innerHTML = '<p class="text-red-500">Erro ao carregar os produtos.</p>';
+  });
+</script>
+
+	
+<script>
+
         function renderProducts(productsToRender) {
             const productsGrid = document.getElementById('productsGrid');
             productsGrid.innerHTML = '';
